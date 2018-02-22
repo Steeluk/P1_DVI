@@ -12,6 +12,8 @@ MemoryGame = function(gs) {
 	this.gs = gs;
 	this.cards = [];
 	this.state = "Memory Game";
+	this.pairsFounds = 0;
+
 	this.initGame = function(){
 		//console.log(this.gs.maps);
 		var that=this;
@@ -21,7 +23,7 @@ MemoryGame = function(gs) {
                 that.cards.push(new MemoryGameCard(key));
             }
 		});
-		this.cards.sort(function(){return 0.5 - Math.random()}); //-> Esta linea te desordena un array
+		//this.cards.sort(function(){return 0.5 - Math.random()}); //-> Esta linea te desordena un array
 		this.loop();
 	};
 	this.draw = function(){
@@ -33,7 +35,7 @@ MemoryGame = function(gs) {
 	};
 	this.loop = function(){
 	    var that = this;
-        setInterval(function() { that.draw() }, 16);
+        setInterval(function() {that.draw() }, 16);
         //setInterval(this.draw, 3000);
     };
 	this.onClick = function(cardId){
@@ -41,25 +43,6 @@ MemoryGame = function(gs) {
         var clickedCard = this.cards[cardId];
         var secondCard;
         var count = 0;
-
-        /*
-        clickedCard.flip();
-        this.cards.forEach(function (card, index) {
-            if(index !== cardId && card.state === card.states.UP) {
-                if (clickedCard.compareTo(card)) {
-                    that.state = "Match Found";
-                    card.found();
-                    clickedCard.found();
-                }
-                else {
-                    that.state = "Try again";
-                    setTimeout(function () {
-                        card.flip();
-                        clickedCard.flip();
-                    }, 600);
-                }
-            }
-        });*/
 
         this.cards.forEach(function (card) {
             if(card.state === card.states.UP) {
@@ -71,12 +54,13 @@ MemoryGame = function(gs) {
         if(count === 0){
             clickedCard.flip();
         }
-        if (count === 1) {
+        if (count === 1 && clickedCard.state !== clickedCard.states.UP) {
             clickedCard.flip();
             if (clickedCard.compareTo(secondCard)) {
                 that.state = "Match Found";
                 secondCard.found();
                 clickedCard.found();
+                this.pairsFounds++;
             }
             else {
                 that.state = "Try again";
@@ -87,15 +71,8 @@ MemoryGame = function(gs) {
             }
         }
 
-        /*var win = true;
-        this.cards.forEach(function (card) {
-            if(card.state !== card.states.FOUND) {
-                var win = false;
-            }
-        });
-
-        if(win)
-            this.state = "You Win!!";*/
+        if(this.pairsFounds === 8)
+            this.state = "You Win!!"
     };
 };
 
@@ -115,6 +92,7 @@ MemoryGameCard = function(id) {
 		FOUND: 2
 	};
 	this.state = this.states.DOWN;
+
 	this.flip = function(){
 	    if(this.state === this.states.UP)
             this.state = this.states.DOWN;
