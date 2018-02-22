@@ -42,6 +42,25 @@ MemoryGame = function(gs) {
         var secondCard;
         var count = 0;
 
+        /*
+        clickedCard.flip();
+        this.cards.forEach(function (card, index) {
+            if(index !== cardId && card.state === card.states.UP) {
+                if (clickedCard.compareTo(card)) {
+                    that.state = "Match Found";
+                    card.found();
+                    clickedCard.found();
+                }
+                else {
+                    that.state = "Try again";
+                    setTimeout(function () {
+                        card.flip();
+                        clickedCard.flip();
+                    }, 600);
+                }
+            }
+        });*/
+
         this.cards.forEach(function (card) {
             if(card.state === card.states.UP) {
                 secondCard = card;
@@ -67,6 +86,16 @@ MemoryGame = function(gs) {
                 }, 600);
             }
         }
+
+        /*var win = true;
+        this.cards.forEach(function (card) {
+            if(card.state !== card.states.FOUND) {
+                var win = false;
+            }
+        });
+
+        if(win)
+            this.state = "You Win!!";*/
     };
 };
 
