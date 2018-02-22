@@ -23,7 +23,7 @@ MemoryGame = function(gs) {
                 that.cards.push(new MemoryGameCard(key));
             }
 		});
-		//this.cards.sort(function(){return 0.5 - Math.random()}); //-> Esta linea te desordena un array
+		this.cards.sort(function(){return 0.5 - Math.random()}); //-> Esta linea te desordena un array
 		this.loop();
 	};
 	this.draw = function(){
@@ -35,8 +35,7 @@ MemoryGame = function(gs) {
 	};
 	this.loop = function(){
 	    var that = this;
-        setInterval(function() {that.draw() }, 16);
-        //setInterval(this.draw, 3000);
+        setInterval(function() {that.draw() }, 16); //this.draw.bind(this)
     };
 	this.onClick = function(cardId){
 	    var that = this;
@@ -63,6 +62,7 @@ MemoryGame = function(gs) {
                 this.pairsFounds++;
             }
             else {
+
                 that.state = "Try again";
                 setTimeout(function () {
                     secondCard.flip();
@@ -72,7 +72,7 @@ MemoryGame = function(gs) {
         }
 
         if(this.pairsFounds === 8)
-            this.state = "You Win!!"
+            this.state = "You Win!!";
     };
 };
 
