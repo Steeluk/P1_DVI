@@ -13,6 +13,8 @@ MemoryGame = function(gs) {
 	this.cards = [];
 	this.state = "Memory Game";
 	this.pairsFounds = 0;
+	this.secondCard = undefined;
+	this.waiting = false;
 
 	this.initGame = function(){
 		//console.log(this.gs.maps);
@@ -40,39 +42,38 @@ MemoryGame = function(gs) {
 	this.onClick = function(cardId){
 	    var that = this;
         var clickedCard = this.cards[cardId];
-        var secondCard;
-        var count = 0;
 
-        this.cards.forEach(function (card) {
-            if(card.state === card.states.UP) {
-                secondCard = card;
-                count++;
-            }
-        });
-
-        if(count === 0){
-            clickedCard.flip();
-        }
-        if (count === 1 && clickedCard.state !== clickedCard.states.UP) {
-            clickedCard.flip();
-            if (clickedCard.compareTo(secondCard)) {
-                that.state = "Match Found";
-                secondCard.found();
-                clickedCard.found();
-                this.pairsFounds++;
+        if(!this.waiting) {
+            if (this.secondCard === undefined) {
+                clickedCard.flip();
+                this.secondCard = clickedCard;
             }
             else {
-
-                that.state = "Try again";
-                setTimeout(function () {
-                    secondCard.flip();
+                if (clickedCard.state !== clickedCard.states.UP) {
                     clickedCard.flip();
-                }, 600);
+                    if (clickedCard.compareTo(this.secondCard)) {
+                        that.state = "Match Found";
+                        this.secondCard.found();
+                        clickedCard.found();
+                        this.pairsFounds++;
+                        this.secondCard = undefined;
+                    }
+                    else {
+                        this.waiting = true;
+                        that.state = "Try again";
+                        setTimeout(function () {
+                            that.secondCard.flip();
+                            clickedCard.flip();
+                            that.secondCard = undefined;
+                            that.waiting = false;
+                        }, 600);
+                    }
+                }
             }
-        }
 
-        if(this.pairsFounds === 8)
-            this.state = "You Win!!";
+            if (this.pairsFounds === 8)
+                this.state = "You Win!!";
+        }
     };
 };
 
